@@ -1,0 +1,45 @@
+:root {
+    --surface: #ffffff;
+    --page-bg: #f5f7fa;
+    --text: #17202a;
+    --muted: #5f6b7a;
+    --border: #d9e1ec;
+    --primary: #1f6feb;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--page-bg);
+    color: var(--text);
+}
+
+.app-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.brand-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.muted {
+    color: var(--muted);
+}

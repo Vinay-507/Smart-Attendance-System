@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Correct Attendance | Smart Attendance System{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h2 class="h4 mb-1">Correct Attendance</h2>
+            <p class="muted mb-0">
+                Session {{ session_id }} | {{ session_date }} {{ session_time }} |
+                {{ recognition_results|length }} faces detected
+            </p>
+        </div>
+        <a class="btn btn-outline-secondary" href="{{ url_for('attendance.capture_attendance') }}">New Capture</a>
+    </div>
+
+    {% include "partials/flash_messages.html" %}
+
+    {% if unknown_faces %}
+        <div class="alert alert-warning">
+            {{ unknown_faces|length }} detected face(s) were not confidently matched. Review the checklist before saving.
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('attendance.save_attendance') }}">
+        <input type="hidden" name="session_id" value="{{ session_id }}">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Present</th>
+                        <th>Roll Number</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>AI Status</th>
+                        <th>Similarity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in draft_rows %}
+                        <tr>
+                            <td>
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="present_student_ids"
+                                    value="{{ row.student_id }}"
+                                    {% if row.predicted_present %}checked{% endif %}
+                                >
+                                {% if row.predicted_present %}
+                                    <input type="hidden" name="predicted_present_ids" value="{{ row.student_id }}">
+                                {% endif %}
+                                <input
+                                    type="hidden"
+                                    name="confidence_{{ row.student_id }}"
+                                    value="{{ '%.6f'|format(row.confidence) if row.confidence is not none else '' }}"
+                                >
+                            </td>
+                            <td>{{ row.roll_number }}</td>
+                            <td>{{ row.full_name }}</td>
+                            <td>
+                                {% if row.class_name or row.section %}
+                                    {{ row.class_name or '-' }} {{ row.section or '' }}
+                                {% else %}
+                                    <span class="muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.predicted_present %}
+                                    <span class="badge text-bg-success">Present</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Absent</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.confidence is not none %}
+                                    {{ '%.3f'|format(row.confidence) }}
+                                {% else %}
+                                    <span class="muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center muted py-4">No registered students found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary" {% if not draft_rows %}disabled{% endif %}>
+                Save Final Attendance
+            </button>
+            <a href="{{ url_for('attendance.capture_attendance') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

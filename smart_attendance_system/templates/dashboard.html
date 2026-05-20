@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Smart Attendance System{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+            <h2 class="h4 mb-2">Classroom Attendance Dashboard</h2>
+            <p class="muted mb-3">
+                Register students with face images, generate ArcFace embeddings, and prepare the database for classroom attendance capture.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('students.register_student') }}" class="btn btn-primary">Register Student</a>
+                <a href="{{ url_for('students.list_students') }}" class="btn btn-outline-secondary">View Students</a>
+                <a href="{{ url_for('attendance.capture_attendance') }}" class="btn btn-outline-primary">Capture Attendance</a>
+                <a href="{{ url_for('reports.attendance_reports') }}" class="btn btn-outline-primary">Reports</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="panel h-100">
+                        <div class="h5 mb-1">{{ stats.total_students }}</div>
+                        <div class="small muted">Students</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="panel h-100">
+                        <div class="h5 mb-1">{{ stats.total_sessions }}</div>
+                        <div class="small muted">Sessions</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="panel h-100">
+                        <div class="h5 mb-1">{{ stats.present_records }}</div>
+                        <div class="small muted">Present Records</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="panel h-100">
+                        <div class="h5 mb-1">{{ stats.attendance_percentage }}%</div>
+                        <div class="small muted">Attendance Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
